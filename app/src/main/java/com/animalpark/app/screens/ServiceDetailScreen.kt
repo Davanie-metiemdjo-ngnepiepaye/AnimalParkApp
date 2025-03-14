@@ -10,18 +10,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun ServiceDetailScreen(serviceName: String, latitude: Double, longitude: Double) {
+fun ServiceDetailScreen(serviceName: String, location: String) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Détails du Service", style = MaterialTheme.typography.h5)
+        Text(text = "🏛 Détails du Service", style = MaterialTheme.typography.h5)
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "📌 Nom : $serviceName")
-        Text(text = "🌍 Latitude : $latitude")
-        Text(text = "🌍 Longitude : $longitude")
+        Text(text = "📍 Emplacement : $location")
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            val gmmIntentUri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude($serviceName)")
+            val gmmIntentUri = Uri.parse("geo:0,0?q=$location ($serviceName)")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
         }) {

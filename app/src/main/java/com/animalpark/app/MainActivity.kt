@@ -23,28 +23,38 @@ class MainActivity : ComponentActivity() {
 
             NavHost(navController, startDestination = if (auth.currentUser != null) "home" else "login") {
 
-                // Écran de connexion
+                // 📌 Écran de connexion
                 composable("login") { LoginScreen(navController, auth) }
 
-                // Écran d'inscription
+                // 📌 Écran d'inscription
                 composable("register") { RegisterScreen(navController, auth, db) }
 
-                // Écran d'accueil après connexion
+                // 📌 Écran d'accueil après connexion
                 composable("home") { HomeScreen(navController, auth) }
 
-                // Écran affichant la liste des enclos et animaux
+                // 📌 Écran affichant la liste des enclos et animaux
                 composable("enclosures") { EnclosureListScreen(navController, db) }
 
-                // Écran d'affichage des détails d'un enclos
+                // 📌 Écran d'affichage des détails d'un enclos
                 composable("enclosureDetail/{enclosureId}") { backStackEntry ->
                     val enclosureId = backStackEntry.arguments?.getString("enclosureId") ?: ""
                     EnclosureDetailScreen(enclosureId, db, auth)
                 }
 
-                // Écran d'ajout d'avis pour un enclos spécifique
+                // 📌 Écran d'ajout d'avis pour un enclos spécifique
                 composable("addReview/{enclosureId}") { backStackEntry ->
                     val enclosureId = backStackEntry.arguments?.getString("enclosureId") ?: ""
                     AddReviewScreen(enclosureId, db, auth)
+                }
+
+                // ✅ **Ajout de la liste des services**
+                composable("services") { ServiceListScreen(navController, db) }
+
+                // ✅ **Ajout des détails d'un service**
+                composable("serviceDetail/{serviceName}/{location}") { backStackEntry ->
+                    val serviceName = backStackEntry.arguments?.getString("serviceName") ?: "Service inconnu"
+                    val location = backStackEntry.arguments?.getString("location") ?: "Emplacement inconnu"
+                    ServiceDetailScreen(serviceName, location)
                 }
             }
         }
