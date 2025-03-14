@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "83660040781",
+    "firebase_url": "https://animalparkfirebase-default-rtdb.firebaseio.com",
+    "project_id": "animalparkfirebase",
+    "storage_bucket": "animalparkfirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83660040781:android:349aed8395faf3fbe24a04",
+        "android_client_info": {
+          "package_name": "com.animalpark.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl13gfL8FsjbSm02K9QRyTvfkQBbh_KeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

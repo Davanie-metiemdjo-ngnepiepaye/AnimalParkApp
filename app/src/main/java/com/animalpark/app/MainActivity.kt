@@ -45,15 +45,6 @@ class MainActivity : ComponentActivity() {
                 composable("addReview/{enclosureId}") { backStackEntry ->
                     val enclosureId = backStackEntry.arguments?.getString("enclosureId") ?: ""
                     AddReviewScreen(enclosureId, db, auth)
-
-                    composable("navigate/{startLat}/{startLng}/{endLat}/{endLng}") { backStackEntry ->
-                        val startLat = backStackEntry.arguments?.getString("startLat")?.toDoubleOrNull() ?: 0.0
-                        val startLng = backStackEntry.arguments?.getString("startLng")?.toDoubleOrNull() ?: 0.0
-                        val endLat = backStackEntry.arguments?.getString("endLat")?.toDoubleOrNull() ?: 0.0
-                        val endLng = backStackEntry.arguments?.getString("endLng")?.toDoubleOrNull() ?: 0.0
-                        NavigationScreen(startLat, startLng, endLat, endLng)
-                    }
-
                 }
             }
         }
