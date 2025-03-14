@@ -4,6 +4,8 @@
 
     <!-- ✅ Ajout de la permission Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:hardwareAccelerated="true"
@@ -15,7 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AnimalParkApp"
-        android:enableOnBackInvokedCallback="true"> <!-- ✅ Correction ici -->
+        android:enableOnBackInvokedCallback="true">
+
+        <!-- ✅ Ajout de la clé API Google Maps ici -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB7WpUQfY1CF_4dvv8qvWgVCbYlM6r8ydk" />
 
         <activity
             android:name=".MainActivity"

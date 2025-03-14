@@ -55,7 +55,14 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
-    // Firebase
+
+    implementation ("com.google.maps.android:android-maps-utils:2.2.3")
+
+    implementation ("com.google.maps:google-maps-services:0.15.0") // Pour Directions API
+    implementation("com.google.maps.android:maps-compose:2.11.2") // 📌 Compose Maps SDK
+    implementation("com.google.android.gms:play-services-maps:18.1.0") // 📌 Google Maps SDK
+    implementation("com.google.android.libraries.places:places:3.2.0") // 📌 Google Places API
+
 
 
     // Google Sign-In

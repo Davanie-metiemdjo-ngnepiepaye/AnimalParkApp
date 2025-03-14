@@ -1,5 +1,6 @@
 package com.animalpark.app.screens
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -30,7 +31,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
 
         // ✅ Bouton pour voir la liste des enclos
         Button(onClick = {
-            navController.navigate("enclosures") // Naviguer vers l'écran des enclos
+            navController.navigate("enclosures")
         }) {
             Text("🦁 Voir les enclos")
         }
@@ -39,7 +40,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
 
         // ✅ Bouton pour voir les services du parc
         Button(onClick = {
-            navController.navigate("services") // Naviguer vers l'écran des services
+            navController.navigate("services")
         }) {
             Text("🏪 Voir les services")
         }
@@ -49,24 +50,29 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
         // ✅ Bouton pour la navigation dans le parc (Google Maps)
         Button(onClick = {
             val gmmIntentUri = Uri.parse("geo:0,0?q=Parc Animalier")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
-            context.startActivity(mapIntent)
-        }) {
-            Text("🗺️ Naviguer dans le parc")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // ✅ Bouton de déconnexion
-        Button(onClick = {
-            auth.signOut() // Déconnecter l'utilisateur
-            Toast.makeText(context, "Déconnexion réussie", Toast.LENGTH_SHORT).show()
-            navController.navigate("login") {
-                popUpTo("home") { inclusive = true } // Effacer l'historique pour éviter de revenir en arrière
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri).apply {
+                setPackage("com.google.android.apps.maps")
+            }
+            try {
+                context.startActivity(mapIntent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(context, "Google Maps n'est pas installé.", Toast.LENGTH_LONG).show()
             }
         }) {
-            Text("🚪 Se déconnecter")
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ✅ Bouton de déconnexion
+            Button(onClick = {
+                auth.signOut()
+                Toast.makeText(context, "Déconnexion réussie", Toast.LENGTH_SHORT).show()
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }) {
+                Text("🚪 Se déconnecter")
+            }
         }
     }
 }
