@@ -14,37 +14,22 @@ import com.google.firebase.database.*
 
 @Composable
 fun EnclosureListScreen(navController: NavController, db: FirebaseDatabase) {
-    var enclosures by remember { mutableStateOf(listOf<Enclosure>()) }
+    var zones by remember { mutableStateOf(listOf<EnclosureZone>()) }
 
     LaunchedEffect(Unit) {
-        val ref = db.reference.child("zoo")  // 🔥 Adapter au bon chemin
+        val ref = db.reference.child("zoo")
 
         ref.get().addOnSuccessListener { snapshot ->
-            val enclosureList = mutableListOf<Enclosure>()
+            val zoneList = snapshot.children.mapNotNull { zoneSnapshot ->
+                val zoneId = zoneSnapshot.key ?: return@mapNotNull null
+                val zoneName = zoneSnapshot.child("name").getValue(String::class.java) ?: "Zone $zoneId"
+                val enclosureCount = zoneSnapshot.child("enclosures").childrenCount.toInt()
 
-            for (zoneSnapshot in snapshot.children) {  // 🔍 Parcours des zones du zoo
-                val zoneIndex = zoneSnapshot.key ?: continue
-                Log.d("Firebase", "Zone trouvée: $zoneIndex")
-
-                val enclosuresSnapshot = zoneSnapshot.child("enclosures")
-                if (enclosuresSnapshot.exists()) {
-                    for (enclosureSnapshot in enclosuresSnapshot.children) {
-                        val id = enclosureSnapshot.child("id").getValue(String::class.java) ?: ""
-                        val name = zoneSnapshot.child("name").getValue(String::class.java) ?: "Nom inconnu"
-
-                        val animals = enclosureSnapshot.child("animals").children.mapNotNull {
-                            it.child("name").getValue(String::class.java)
-                        }
-
-                        if (id.isNotBlank()) {
-                            enclosureList.add(Enclosure("Zone $zoneIndex - $name", animals))
-                        }
-                    }
-                }
+                EnclosureZone(zoneId, zoneName, enclosureCount)
             }
 
-            enclosures = enclosureList.sortedBy { it.name }  // 🔥 Trier par nom pour affichage propre
-            Log.d("Firebase", "Nombre d'enclos récupérés: ${enclosures.size}")
+            zones = zoneList.sortedBy { it.name }
+            Log.d("Firebase", "Zones récupérées: ${zones.size}")
 
         }.addOnFailureListener {
             Log.e("Firebase", "Erreur de lecture", it)
@@ -52,26 +37,26 @@ fun EnclosureListScreen(navController: NavController, db: FirebaseDatabase) {
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Liste des Enclos", style = MaterialTheme.typography.h5)
+        Text(text = "Liste des Zones", style = MaterialTheme.typography.h5)
 
-        if (enclosures.isEmpty()) {
-            Text(text = "Aucun enclos trouvé.", modifier = Modifier.padding(16.dp))
+        if (zones.isEmpty()) {
+            Text(text = "Aucune zone trouvée.", modifier = Modifier.padding(16.dp))
         }
 
         LazyColumn {
-            items(enclosures) { enclosure ->
+            items(zones) { zone ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
-                            navController.navigate("enclosureDetail/${enclosure.name}")
+                            navController.navigate("enclosureZoneDetail/${zone.id}")
                         },
                     elevation = 4.dp
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "📍 ${enclosure.name}", style = MaterialTheme.typography.h6)
-                        Text(text = "🐾 Animaux : ${if (enclosure.animals.isEmpty()) "Aucun" else enclosure.animals.joinToString(", ")}")
+                        Text(text = "📍 ${zone.name}", style = MaterialTheme.typography.h6)
+                        Text(text = "📦 Enclos : ${zone.enclosureCount}")
                     }
                 }
             }
@@ -79,7 +64,8 @@ fun EnclosureListScreen(navController: NavController, db: FirebaseDatabase) {
     }
 }
 
-data class Enclosure(
+data class EnclosureZone(
+    val id: String,
     val name: String,
-    val animals: List<String>
+    val enclosureCount: Int
 )

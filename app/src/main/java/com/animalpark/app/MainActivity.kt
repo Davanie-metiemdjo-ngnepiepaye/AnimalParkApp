@@ -33,18 +33,12 @@ class MainActivity : ComponentActivity() {
                 composable("home") { HomeScreen(navController, auth) }
 
                 // 📌 Écran affichant la liste des enclos et animaux
-                composable("enclosures") { EnclosureListScreen(navController, db) }
-
-                // 📌 Écran d'affichage des détails d'un enclos
-                composable("enclosureDetail/{enclosureId}") { backStackEntry ->
-                    val enclosureId = backStackEntry.arguments?.getString("enclosureId") ?: ""
-                    EnclosureDetailScreen(enclosureId, db, auth)
+                composable("enclosures") {
+                    EnclosureListScreen(navController, db)
                 }
-
-                // 📌 Écran d'ajout d'avis pour un enclos spécifique
-                composable("addReview/{enclosureId}") { backStackEntry ->
-                    val enclosureId = backStackEntry.arguments?.getString("enclosureId") ?: ""
-                    AddReviewScreen(enclosureId, db, auth)
+                composable("enclosureZoneDetail/{zoneId}") { backStackEntry ->
+                    val zoneId = backStackEntry.arguments?.getString("zoneId") ?: return@composable
+                    EnclosureDetailScreen(navController, db, zoneId)
                 }
 
                 // ✅ **Ajout de la liste des services**
