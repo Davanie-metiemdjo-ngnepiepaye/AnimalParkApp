@@ -16,7 +16,8 @@ fun AddReviewScreen(enclosureId: String, db: FirebaseDatabase, auth: FirebaseAut
     var comment by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp))
+    {
         Text(text = "Ajouter un avis", style = MaterialTheme.typography.h5)
 
         TextField(value = rating, onValueChange = { rating = it }, label = { Text("Note (1 à 5)") })
