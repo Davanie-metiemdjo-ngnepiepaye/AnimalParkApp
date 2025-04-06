@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.animalpark.app.models.Service
 import com.google.firebase.database.*
 
 @Composable
@@ -39,27 +40,44 @@ fun ServiceListScreen(navController: NavController, db: FirebaseDatabase) {
         })
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "🏛 Services du Parc", style = MaterialTheme.typography.h5)
-
-        if (services.isEmpty()) {
-            Text(text = "Aucun service trouvé.", modifier = Modifier.padding(16.dp))
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.height(72.dp),
+                title = {
+                    Column(modifier = Modifier.padding(top = 30.dp)) {
+                        Text("Services du parc")
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            Spacer(modifier = Modifier.height(70.dp)) // Ajoute un espace pour le footer de l'app
         }
+    ) { innerPadding ->
+        Column(modifier = Modifier
+            .padding(innerPadding)
+            .padding(16.dp)) {
 
-        LazyColumn {
-            items(services) { service ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable {
-                            navController.navigate("serviceDetail/${service.name}/${service.location}")
-                        },
-                    elevation = 4.dp
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "📍 ${service.name}", style = MaterialTheme.typography.h6)
-                        Text(text = "📌 Emplacement : ${service.location}")
+            if (services.isEmpty()) {
+                Text(text = "Aucun service trouvé.", modifier = Modifier.padding(16.dp))
+            }
+
+            LazyColumn {
+                items(services) { service ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .clickable {
+                                navController.navigate("serviceDetail/${service.name}/${service.location}")
+                            },
+                        elevation = 4.dp
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(text = "📍 ${service.name}", style = MaterialTheme.typography.h6)
+                            Text(text = "📌 Emplacement : ${service.location}")
+                        }
                     }
                 }
             }
@@ -67,9 +85,6 @@ fun ServiceListScreen(navController: NavController, db: FirebaseDatabase) {
     }
 }
 
+
 // 📌 Modèle de données pour un service
-data class Service(
-    val id: String,
-    val name: String,
-    val location: String
-)
+

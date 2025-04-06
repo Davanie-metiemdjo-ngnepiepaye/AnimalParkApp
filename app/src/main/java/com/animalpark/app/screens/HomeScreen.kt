@@ -1,77 +1,138 @@
 package com.animalpark.app.screens
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.animalpark.app.R
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
-    val context = LocalContext.current
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "🏛 Bienvenue dans l'application ZooApp", style = MaterialTheme.typography.h5)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // ✅ Bouton pour voir la liste des enclos
-        Button(onClick = {
-            navController.navigate("enclosures")
-        }) {
-            Text("🦁 Voir les enclos")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // ✅ Bouton pour voir les services du parc
-        Button(onClick = {
-            navController.navigate("services")
-        }) {
-            Text("🏪 Voir les services")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // ✅ Bouton pour la navigation dans le parc (Google Maps)
-        Button(onClick = {
-            val gmmIntentUri = Uri.parse("geo:0,0?q=Parc Animalier")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri).apply {
-                setPackage("com.google.android.apps.maps")
-            }
-            try {
-                context.startActivity(mapIntent)
-            } catch (e: ActivityNotFoundException) {
-                Toast.makeText(context, "Google Maps n'est pas installé.", Toast.LENGTH_LONG).show()
-            }
-        }) {
-
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // ✅ Bouton de déconnexion
-            Button(onClick = {
-                auth.signOut()
-                Toast.makeText(context, "Déconnexion réussie", Toast.LENGTH_SHORT).show()
-                navController.navigate("login") {
-                    popUpTo("home") { inclusive = true }
+fun HomeScreen(
+    navController: NavController,
+    auth: FirebaseAuth,
+    isAdmin: Boolean = false
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.height(80.dp), // un peu plus haute
+                backgroundColor = MaterialTheme.colors.primary,
+                //contentPadding = PaddingValues(horizontal = 16.dp),
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp), // 💡 décalage vers le bas
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = " Acceuil ",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        IconButton(onClick = {
+                            auth.signOut()
+                            navController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.ExitToApp,
+                                contentDescription = "Déconnexion",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
-            }) {
-                Text("🚪 Se déconnecter")
+            )
+        }
+
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // 🎨 Image de fond
+            Image(
+                painter = painterResource(id = R.drawable.background),
+                contentDescription = "Image de fond",
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // ✅ Texte de bienvenue
+                Box(
+                    modifier = Modifier
+                        .background(Color.Blue.copy(alpha = 0.7f), shape = RoundedCornerShape(12.dp))
+                        .padding(35.dp)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Bienvenue dans ZooApp",
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        if (isAdmin) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "👑 Vous êtes connecté en tant qu'ADMIN",
+                                color = Color.Yellow,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // ✅ Image illustratrice (ou logo)
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = "Zoo Image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    alignment = Alignment.Center
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // ✅ Bouton principal
+                Button(
+                    onClick = { navController.navigate("enclosures") },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(30.dp)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
+                ) {
+                    Text("Explorer le Zoo", fontSize = 22.sp, color = Color.White)
+                }
             }
         }
     }
